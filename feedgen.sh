@@ -23,33 +23,39 @@ EOF
 }
 
 get_entry() {
-  cat << EOF
-<entry>
-<title>Your Title Here</title>
-<link href="http://domain.com/page/ "/>
-<id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
-EOF
+  title=$1
+  id=$2
 
+  echo "<entry>"
+  echo "<title>$title</title>"
+  echo "<id>$id</id>"
   echo "<updated>$(get_date)</updated>"
-  cat << EOF
-<summary>Short Summary</summary>
-</entry>
-EOF
+  echo "</entry>"
 }
 
 feed=$1
 
-if [[ $feed != *.atom ]] ; then echo nope ; exit 1; fi
+if [[ $feed != *.atom ]] ; then echo No feed provided ; exit 1; fi
 
 if [ ! -f $feed ] ; then 
   get_basic_feed > $feed
+  echo The feed was just created. Please manually fill in the feed details
 fi
+
+entry_title="$2"
+
+if [ "$entry_title" == "" ] ; then 
+  echo No title for a new feed entry provided.
+  exit 0
+fi
+
+feed_id="myfeed/$(grep '<entry>' $feed | wc -l)"
 
 # remove closing feed for adding new entry
 sed -i '$d' $feed
 
 # add entry
-get_entry >> $feed
+get_entry "$entry_title" "$feed_id" >> $feed
 
 # update last updated date
 sed -i "0,/^.*updated.*$/s//<updated>$(get_date)<\/updated>/" $feed
