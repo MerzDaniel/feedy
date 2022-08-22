@@ -45,11 +45,14 @@ if [ ! -f $feed ] ; then
   get_basic_feed > $feed
 fi
 
-# remove closing feed
+# remove closing feed for adding new entry
 sed -i '$d' $feed
 
 # add entry
 get_entry >> $feed
+
+# update last updated date
+sed -i "0,/^.*updated.*$/s//<updated>$(get_date)<\/updated>/" $feed
 
 # close feed
 echo '</feed>' >> $feed
