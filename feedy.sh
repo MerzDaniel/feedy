@@ -6,12 +6,7 @@ get_date() {
 }
 
 get_id() {
-  domain=$(grep -oP 'href="https?://\K[^/]*(?=/)' $feed | head -n 1)
-  file_name=${feed##*/}
-  entry_count="000000$(grep '<entry>' $feed | wc -l)"
-  
-  # construct an IRI ID as requested by spec. Support 99999 entries
-  echo tag:$domain,$(date +%F):file:$file_name:${entry_count: -5}
+  echo urn:uuid:$(uuidgen)
 }
 
 get_basic_feed() {
@@ -24,7 +19,7 @@ get_basic_feed() {
 EOF
 
   echo "<updated>$(get_date)</updated>"
-  echo "<id>urn:uuid:$(uuidgen)</updated>"
+  echo "<id>$(get_id)</id>"
   cat << EOF
 <author>
 <name>Your Name</name>
