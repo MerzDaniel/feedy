@@ -6,7 +6,7 @@ It does no XML parsing or anything fancy, so it may break your existing feed if 
 
 ## Usage
     # Create a feed if it doesn't exist yet
-    ./feedy.sh test.atom` 
+    ./feedy.sh test.atom
 
     # You have to manually edit the feed and enter your Author name and host
 
