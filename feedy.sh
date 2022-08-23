@@ -1,6 +1,17 @@
 
+feed=$1
+
 get_date() {
   date +%FT%R:00Z
+}
+
+get_id() {
+  domain=$(grep -oP 'href="https?://\K[^/]*(?=/)' $feed | head -n 1)
+  file_name=${feed##*/}
+  entry_count="000000$(grep '<entry>' $feed | wc -l)"
+  
+  # construct an IRI ID as requested by spec. Support 99999 entries
+  echo tag:$domain,$(date +%F):file:$file_name:${entry_count: -5}
 }
 
 get_basic_feed() {
@@ -33,8 +44,6 @@ get_entry() {
   echo "</entry>"
 }
 
-feed=$1
-
 if [[ $feed != *.atom ]] ; then echo No feed provided ; exit 1; fi
 
 if [ ! -f $feed ] ; then 
@@ -49,13 +58,13 @@ if [ "$entry_title" == "" ] ; then
   exit 0
 fi
 
-feed_id="myfeed/$(grep '<entry>' $feed | wc -l)"
 
 # remove closing feed for adding new entry
 sed -i '$d' $feed
 
 # add entry
-get_entry "$entry_title" "$feed_id" >> $feed
+entry_id=$(get_id)
+get_entry "$entry_title" "$entry_id" >> $feed
 
 # update last updated date
 sed -i "0,/^.*updated.*$/s//<updated>$(get_date)<\/updated>/" $feed
