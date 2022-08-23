@@ -24,6 +24,7 @@ get_basic_feed() {
 EOF
 
   echo "<updated>$(get_date)</updated>"
+  echo "<id>urn:uuid:$(uuidgen)</updated>"
   cat << EOF
 <author>
 <name>Your Name</name>
