@@ -16,6 +16,7 @@ get_basic_feed() {
 <title>Title of your feed</title>
 <subtitle>Subtitle of your feed</subtitle>
 <link href="http://domain.com"/>
+<link rel="self" href="/feed.atom"/>
 EOF
 
   echo "<updated>$(get_date)</updated>"
@@ -37,6 +38,7 @@ get_entry() {
   echo "<title>$title</title>"
   echo "<id>$id</id>"
   echo "<updated>$(get_date)</updated>"
+  echo "<published>$(get_date)</published>"
   echo "</entry>"
 }
 
