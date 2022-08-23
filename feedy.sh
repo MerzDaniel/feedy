@@ -48,14 +48,16 @@ if [[ $feed != *.atom ]] ; then echo No feed provided ; exit 1; fi
 
 if [ ! -f $feed ] ; then 
   get_basic_feed > $feed
-  echo The feed was just created. Please manually fill in the feed details
+  echo The feed was just created. Please manually fill in the feed details. A dedicated domain is needed for ID generation. No Entry will be created
+  echo Done
+  exit 0
 fi
 
 entry_title="$2"
 
 if [ "$entry_title" == "" ] ; then 
   echo No title for a new feed entry provided.
-  exit 0
+  exit 1
 fi
 
 
@@ -72,3 +74,4 @@ sed -i "0,/^.*updated.*$/s//<updated>$(get_date)<\/updated>/" $feed
 # close feed
 echo '</feed>' >> $feed
 
+echo Added new feed entry with ID $entry_id
