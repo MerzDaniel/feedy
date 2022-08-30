@@ -1,6 +1,11 @@
 
 feed=$1
 
+print_usage_err() {
+  echo 'Usage: ./feedy.sh <feed_name>.atom                              | Creates the feed'
+  echo 'Usage: ./feedy.sh <feed_name>.atom <entry_title> <entry_link>   | Creates a new entry for the feed'
+  exit 1
+}
 get_date() {
   date +%FT%R:00Z
 }
@@ -33,16 +38,18 @@ EOF
 get_entry() {
   title=$1
   id=$2
+  link=$3
 
   echo "<entry>"
   echo "<title>$title</title>"
   echo "<id>$id</id>"
+  if [ "$link" != "" ] ; then echo "<link href=\"$link\" rel=\"alternate\"/>" ; fi
   echo "<updated>$(get_date)</updated>"
   echo "<published>$(get_date)</published>"
   echo "</entry>"
 }
 
-if [[ $feed != *.atom ]] ; then echo No feed provided ; exit 1; fi
+if [[ $feed != *.atom ]] ; then print_usage_err; fi
 
 if [ ! -f $feed ] ; then 
   get_basic_feed > $feed
@@ -52,10 +59,10 @@ if [ ! -f $feed ] ; then
 fi
 
 entry_title="$2"
+entry_link="$3"
 
-if [ "$entry_title" == "" ] ; then 
-  echo No title for a new feed entry provided.
-  exit 1
+if [ "$entry_title" == "" || "$entry_link" == "" ] ; then 
+  print_usage_err
 fi
 
 
@@ -64,7 +71,7 @@ sed -i '$d' $feed
 
 # add entry
 entry_id=$(get_id)
-get_entry "$entry_title" "$entry_id" >> $feed
+get_entry "$entry_title" "$entry_id" "$entry_link" >> $feed
 
 # update last updated date
 sed -i "0,/^.*updated.*$/s//<updated>$(get_date)<\/updated>/" $feed
