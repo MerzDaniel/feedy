@@ -53,9 +53,7 @@ if [[ $feed != *.atom ]] ; then print_usage_err; fi
 
 if [ ! -f $feed ] ; then 
   get_basic_feed > $feed
-  echo The feed was just created. Please manually fill in the feed details. A dedicated domain is needed for ID generation. No Entry will be created
-  echo Done
-  exit 0
+  echo The feed was just created. Please manually fill in the feed details. 
 fi
 
 entry_title="$2"
