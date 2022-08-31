@@ -59,7 +59,7 @@ fi
 entry_title="$2"
 entry_link="$3"
 
-if [ "$entry_title" == "" || "$entry_link" == "" ] ; then 
+if [ "$entry_title" == "" ] || [ "$entry_link" == "" ] ; then 
   print_usage_err
 fi
 
